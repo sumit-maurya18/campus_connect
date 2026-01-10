@@ -1,0 +1,26 @@
+Copyright (c) 2026 Sumit
+
+All rights reserved.
+
+This repository is source-available but not open-source.
+
+Permission is granted to view, fork, and modify this repository solely for
+personal, educational, or non-commercial evaluation purposes.
+
+You may NOT, without prior written permission from the copyright holder:
+1. Use this software or any derivative work for commercial purposes
+2. Deploy, host, or operate this software as a service (SaaS, PaaS, or similar)
+3. Redistribute, sublicense, or sell this software or derivative works
+4. Create or operate a competing product or platform based on this software
+
+Any use outside the scope of this license is strictly prohibited.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+In no event shall the author be liable for any claim, damages, or other liability
+arising from the use of the software.
+
+For commercial licensing, partnerships, or other permissions,
+contact the copyright holder.
