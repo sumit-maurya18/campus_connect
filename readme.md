@@ -59,6 +59,7 @@ Infrastructure concerns such as CI/CD, monitoring, and scheduling are planned an
 
 
 ## Repository Structure 📁
+```text
 
 campus-connect/
 │
