@@ -1,46 +1,94 @@
+// backend/src/app.js
+// Purpose: Express application configuration
+// Sets up middleware, routes, and error handling
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const config = require('./config/env');
 const routes = require('./routes');
-const errorHandler = require('./middleware/errorHandler');
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
+// Create Express application
 const app = express();
 
-// Security middleware
-app.use(helmet());
-
-// CORS
-app.use(cors({
-  origin: config.cors.origin,
-  credentials: true,
+/**
+ * Security Middleware
+ * Helmet sets various HTTP headers for security
+ */
+app.use(helmet({
+  contentSecurityPolicy: false, // Allow inline scripts (needed for some tools)
+  crossOriginEmbedderPolicy: false
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: config.rateLimit.windowMs,
-  max: config.rateLimit.max,
-  message: 'Too many requests from this IP, please try again later.',
-});
-app.use('/api/', limiter);
+/**
+ * CORS Configuration
+ * Allow requests from frontend domain
+ */
+app.use(cors({
+  origin: config.cors.origin,
+  credentials: config.cors.credentials,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Body parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+/**
+ * Rate Limiting
+ * Apply to all /api/* routes
+ */
+app.use('/api/', apiLimiter);
 
-// Routes
-app.use('/api', routes);
+/**
+ * Body Parsing Middleware
+ * Parse JSON and URL-encoded request bodies
+ */
+app.use(express.json({ limit: '10mb' })); // Allow up to 10MB JSON
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Route not found',
+/**
+ * Request Logging (Development Only)
+ * Log all incoming requests in development
+ */
+if (config.isDevelopment()) {
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+  });
+}
+
+/**
+ * Root Route
+ * GET /
+ * Redirect to API documentation
+ */
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Welcome to Campus Connect API',
+    documentation: '/api',
+    health: '/api/health'
   });
 });
 
-// Error handling
+/**
+ * Mount API Routes
+ * All routes are prefixed with /api
+ */
+app.use('/api', routes);
+
+/**
+ * 404 Handler
+ * Catch requests to non-existent routes
+ * Must be placed AFTER all route definitions
+ */
+app.use(notFoundHandler);
+
+/**
+ * Error Handler
+ * Catch and format all errors
+ * Must have 4 parameters and be placed last
+ */
 app.use(errorHandler);
 
 module.exports = app;
