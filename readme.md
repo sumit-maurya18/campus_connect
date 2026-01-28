@@ -55,10 +55,10 @@ Campus Connect follows a **monorepo architecture** with clear separation of conc
 **Purpose:** Shared types and constants across frontend and backend  
 **Benefit:** Strong type safety and consistency across system boundaries  
 
-Infrastructure concerns such as CI/CD, monitoring, and scheduling are planned and documented separately.
+Infrastructure concerns such as CI/CD, monitoring, and scheduling are pla
+## Repository Structure 📁nned and documented separately.
 
 
-## Repository Structure 📁
 ```text
 
 campus-connect/
