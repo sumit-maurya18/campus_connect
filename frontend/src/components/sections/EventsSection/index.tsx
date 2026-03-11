@@ -10,7 +10,7 @@ export default function EventsSection() {
   return (
     <section id="events">
       <SectionHeader
-        title="Events"
+        title="Learning Programs & Events"
         subtitle="Workshops, webinars & networking sessions for you."
         href="/events"
         accentColor="bg-emerald-500"
@@ -26,12 +26,6 @@ export default function EventsSection() {
         ))}
       </div>
 
-      {/* <Link
-        href="/events"
-        className="mt-4 flex items-center justify-center gap-2 w-full py-3 rounded-2xl border border-dashed border-emerald-200 text-emerald-500 text-sm font-semibold hover:bg-emerald-50 transition-colors duration-200"
-      >
-        Explore More Events <ArrowRight size={15} />
-      </Link> */}
     </section>
   );
 }

@@ -1,10 +1,10 @@
 // src/lib/constants/home.data.ts
 
 export const HERO_BANNERS = [
-  { label: "Internships",  href: "internships",  emoji: "💼", bg: "bg-blue-100"   },
-  { label: "Jobs",         href: "jobs",         emoji: "🧳", bg: "bg-slate-200"  },
-  { label: "Hackathons",   href: "hackathons",   emoji: "🏆", bg: "bg-orange-200" },
-  { label: "Competitions", href: "competitions", emoji: "🥇", bg: "bg-amber-200"  },
+  { label: "Internships",  href: "#internships",  emoji: "💼", bg: "bg-blue-100"   },
+  { label: "Jobs",         href: "#jobs",         emoji: "🧳", bg: "bg-slate-200"  },
+  { label: "Hackathons",   href: "#hackathons",   emoji: "🏆", bg: "bg-orange-200" },
+  { label: "Learning Programs", href: "#events", emoji: "🥇", bg: "bg-amber-200"  },
 ];
 
 export const HACKATHON_BANNERS = [

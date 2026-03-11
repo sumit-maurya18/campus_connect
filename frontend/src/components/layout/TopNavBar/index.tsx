@@ -1,17 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { Search, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-// ── Theme toggle — mounted guard prevents hydration mismatch ──
+// ── Theme toggle ──────────────────────────────────────────
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
-
-  // Render same-size invisible placeholder until mounted
   if (!mounted) return <div className="w-9 h-9" />;
 
   return (
@@ -42,8 +41,11 @@ export default function TopNavBar({ onMobileMenuClick }: TopNavBarProps) {
   return (
     <div className="h-15 flex items-center justify-between px-8 bg-white dark:bg-gray-950 border-b border-gray-300 dark:border-gray-800 shadow-sm">
 
-      {/* ── Brand Logo ── */}
-      <div className="flex items-center gap-0.5 select-none">
+      {/* ── Brand Logo → home ── */}
+      <Link
+        href="/"
+        className="flex items-center gap-0.5 select-none hover:opacity-80 transition-opacity duration-150"
+      >
         <span
           className="text-[1.35rem] font-black tracking-[-0.04em] text-gray-950 dark:text-white"
           style={{ fontFamily: "'DM Sans', sans-serif" }}
@@ -62,7 +64,7 @@ export default function TopNavBar({ onMobileMenuClick }: TopNavBarProps) {
         >
           +
         </span>
-      </div>
+      </Link>
 
       {/* ── Search pill ── */}
       <button
@@ -84,9 +86,6 @@ export default function TopNavBar({ onMobileMenuClick }: TopNavBarProps) {
           Search opportunities...
         </span>
       </button>
-
-      {/* ── Right: Theme toggle ── */}
-      <ThemeToggle />
 
     </div>
   );

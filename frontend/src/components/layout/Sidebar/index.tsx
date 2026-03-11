@@ -17,7 +17,7 @@ import {
 
 const MAIN_NAV = [
   { label: "Home",        href: "/",           icon: Home         },
-  { label: "Internships", href: "/internships", icon: Briefcase    },
+  { label: "Internships", href: "internships", icon: Briefcase    },
   { label: "Jobs",        href: "/jobs",        icon: Building2    },
   { label: "Hackathons",  href: "/hackathons",  icon: Code2        },
   { label: "Events",      href: "/events",      icon: CalendarDays },

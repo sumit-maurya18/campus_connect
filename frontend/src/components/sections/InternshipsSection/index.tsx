@@ -21,13 +21,7 @@ export default function InternshipsSection() {
           <OpportunityCard key={i} type="internship" {...item} />
         ))}
       </div>
-
-      {/* <Link
-        href="/internships"
-        className="mt-4 flex items-center justify-center gap-2 w-full py-3 rounded-2xl border border-dashed border-blue-200 text-blue-500 text-sm font-semibold hover:bg-blue-50 transition-colors duration-200"
-      >
-        Explore More Internships <ArrowRight size={15} />
-      </Link> */}
+      
     </section>
   );
 }
