@@ -1,22 +1,43 @@
-// src/app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
-import AppShell from "@/components/layout/AppShell";
 import { ThemeProvider } from "next-themes";
+import AppShell from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
-  title: "Campus Connect : Your Gateway to Opportunities",
-  description: "Find internships, jobs, hackathons, and courses tailored for students.",
+  title: {
+    default: "Campus Connect",
+    template: "%s | Campus Connect"
+  },
+  description:
+    "Find internships, jobs, hackathons and learning opportunities curated for students.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+  ),
+  openGraph: {
+    title: "Campus Connect",
+    description:
+      "Discover internships, jobs, hackathons and learning programs.",
+    type: "website"
+  }
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <AppShell>
             {children}
-            </AppShell>
+          </AppShell>
         </ThemeProvider>
       </body>
     </html>

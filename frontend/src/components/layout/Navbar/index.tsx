@@ -1,29 +1,24 @@
 "use client";
 
-// src/components/layout/TopNavbar.tsx
-// ─────────────────────────────────────────────────────────
-// MOBILE ONLY (hidden on md+).
-// Sticky hamburger header showing current page title.
-// ─────────────────────────────────────────────────────────
-
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 
 const PAGE_TITLES: Record<string, string> = {
-  "/":            "Home",
+  "/": "Home",
   "/internships": "Internships",
-  "/jobs":        "Jobs",
-  "/hackathons":  "Hackathons",
-  "/events":      "Events",
-  "/resources":   "Resources",
-  "/profile":     "Profile",
+  "/jobs": "Jobs",
+  "/hackathons": "Hackathons",
+  "/events": "Events",
+  "/resources": "Resources",
+  "/profile": "Profile",
 };
 
-interface TopNavbarProps {
+interface NavbarProps {
   onMenuClick: () => void;
 }
 
-export default function TopNavbar({ onMenuClick }: TopNavbarProps) {
+export default function Navbar({ onMenuClick }: NavbarProps) {
+
   const pathname = usePathname();
 
   const pageTitle =
@@ -32,15 +27,20 @@ export default function TopNavbar({ onMenuClick }: TopNavbarProps) {
     )?.[1] ?? "Explore";
 
   return (
-    <header className="md:hidden flex items-center gap-3 h-14 px-4 bg-white border-b border-gray-100 sticky top-0 z-50 flex-0">
+    <header className="md:hidden flex items-center gap-3 h-14 px-4 bg-white border-b border-gray-200 sticky top-0 z-50">
+
       <button
         onClick={onMenuClick}
         aria-label="Open menu"
-        className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors duration-150"
+        className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
       >
-        <Menu size={20} strokeWidth={2} />
+        <Menu size={20} />
       </button>
-      <span className="text-base font-bold text-gray-900">{pageTitle}</span>
+
+      <span className="text-base font-bold text-gray-900">
+        {pageTitle}
+      </span>
+
     </header>
   );
 }

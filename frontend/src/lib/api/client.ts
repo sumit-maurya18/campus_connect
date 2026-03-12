@@ -1,7 +1,13 @@
-// src/lib/api/client.ts
+function getEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} environment variable is missing`);
+  }
+  return value;
+}
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const BASE_URL = getEnv("NEXT_PUBLIC_API_URL");
+const API_KEY  = getEnv("API_SECRET_KEY");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -19,55 +25,56 @@ export interface ApiResponse<T> {
 }
 
 function getHeaders(): HeadersInit {
-  const headers: Record<string, string> = {
+  return {
     "Content-Type": "application/json",
+    "x-api-key": API_KEY,
   };
-
-  const apiKey =
-    process.env.API_SECRET_KEY ||
-    process.env.NEXT_PUBLIC_API_SECRET_KEY;
-
-  if (apiKey) {
-    headers["x-api-key"] = apiKey;
-  }
-
-  return headers;
 }
+
+type FetchOptions = RequestInit & {
+  next?: { revalidate?: number };
+};
 
 export async function apiFetch<T>(
   path: string,
-  options?: RequestInit & { next?: { revalidate?: number } }
+  options: FetchOptions = {}
 ): Promise<ApiResponse<T>> {
-  const url = `${BASE_URL}${path}`;
 
-  // In development: always hit the backend (no cache)
-  // In production: revalidate every 60s
-  const cacheOptions = isDev
-    ? { cache: "no-store" as RequestCache }
-    : { next: { revalidate: 60, ...options?.next } };
+  const { headers, ...rest } = options;
 
-  const res = await fetch(url, {
+  const res = await fetch(`${BASE_URL}${path}`, {
     headers: {
       ...getHeaders(),
-      ...options?.headers,
+      ...(headers ?? {}),
     },
-    ...cacheOptions,
-    ...options,
+
+    ...(isDev
+      ? { cache: "no-store" as RequestCache }
+      : { next: { revalidate: 60 } }),
+
+    ...rest,
   });
 
   if (!res.ok) {
+
     let message = `API error ${res.status}`;
+
     try {
       const err = await res.json();
       message = err.message || err.error || message;
     } catch {}
+
     throw new Error(message);
   }
 
   const json: ApiResponse<T> = await res.json();
 
   if (!json.success) {
-    throw new Error(json.message || json.error || "API returned success: false");
+    throw new Error(
+      json.message ||
+      json.error ||
+      "API returned success:false"
+    );
   }
 
   return json;
@@ -75,8 +82,10 @@ export async function apiFetch<T>(
 
 export async function apiGet<T>(
   path: string,
-  options?: RequestInit & { next?: { revalidate?: number } }
+  options: FetchOptions = {}
 ): Promise<T> {
+
   const response = await apiFetch<T>(path, options);
+
   return response.data;
 }

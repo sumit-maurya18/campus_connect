@@ -1,36 +1,5 @@
 "use client";
 
-// src/components/layout/AppShell.tsx
-// ─────────────────────────────────────────────────────────
-// Master layout. Plugged into src/app/layout.tsx.
-//
-// DESKTOP (md+):
-//   ┌─────────────┬────────────────────────────────────┐
-//   │             │  ScrollAwareTopBar (scrolls away)  │
-//   │  Sidebar    ├────────────────────────────────────┤
-//   │  (fixed     │                                    │
-//   │   240px)    │  <page content>                    │
-//   │             │                                    │
-//   └─────────────┴────────────────────────────────────┘
-//
-// MOBILE (<md):
-//   ┌────────────────────────────────────────────────────┐
-//   │  TopNavbar — sticky (hamburger + page title)       │
-//   ├────────────────────────────────────────────────────┤
-//   │  ScrollAwareTopBar (logo + search, scrolls away)   │
-//   ├────────────────────────────────────────────────────┤
-//   │  <page content>                                    │
-//   └────────────────────────────────────────────────────┘
-//   Sidebar slides over content from left
-//
-// ── PHASE 2 AUTH HOOK ────────────────────────────────────
-// When auth is ready, add these 3 lines before the return:
-//
-//   const pathname = usePathname();
-//   const isAuthPage = ["/login", "/signup"].includes(pathname);
-//   if (isAuthPage) return <>{children}</>;
-// ─────────────────────────────────────────────────────────
-
 import { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import Navbar from "@/components/layout/Navbar";
@@ -41,51 +10,47 @@ interface AppShellProps {
 }
 
 export default function AppShell({ children }: AppShellProps) {
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+  const toggleSidebar = () => setSidebarOpen((p) => !p);
+  const closeSidebar = () => setSidebarOpen(false);
 
-      {/* ── Mobile backdrop ── */}
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
+          onClick={closeSidebar}
         />
       )}
 
-      {/* ── Sidebar ──
-           Desktop: always visible, sticky
-           Mobile:  fixed, slides in/out from left           */}
-      <div
+      <aside
         className={`
           fixed md:sticky top-0 left-0 z-50 h-screen
+          w-[240px]
           transition-transform duration-200 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        <Sidebar />
-      </div>
+        <Sidebar onNavigate={closeSidebar} />
+      </aside>
 
-      {/* ── Right side: everything except the sidebar ── */}
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+      <div className="flex flex-col flex-1 min-w-0">
 
-        {/* Sticky mobile hamburger bar — hidden on desktop */}
-        <Navbar onMenuClick={() => setSidebarOpen((p) => !p)} />
+        <Navbar onMenuClick={toggleSidebar} />
 
-        {/* Scrollable column — TopBar + page content scroll together */}
         <div className="flex-1 overflow-y-auto">
 
-          {/* Logo + Search — scrolls away as user scrolls */}
           <TopNavBar />
 
-          {/* Page content injected here by Next.js routing */}
           <main className="px-8 py-7">
             {children}
           </main>
 
         </div>
+
       </div>
 
     </div>
