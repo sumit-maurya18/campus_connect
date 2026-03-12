@@ -1,111 +1,96 @@
-// backend/src/app.js
-// Purpose: Express application configuration
-// Sets up middleware, routes, and error handling
+/**
+ * Express Application Setup
+ *
+ * Responsibilities:
+ * - configure middleware
+ * - mount routes
+ * - global error handling
+ */
 
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const config = require('./config/env');
-const routes = require('./routes');
-const apiKeyAuth = require('./middleware/apiKeyAuth');
-const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
-const { apiLimiter } = require('./middleware/rateLimiter');
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const compression = require("compression");
 
-// Create Express application
+const config = require("./config/env");
+const routes = require("./routes");
+
+const apiKeyAuth = require("./middleware/apiKeyAuth");
+const { errorHandler, notFoundHandler } = require("./middleware/errorHandler");
+const { apiLimiter } = require("./middleware/rateLimiter");
+
+const logger = require("./utils/logger");
+
 const app = express();
 
 /**
- * Security Middleware
- * Helmet sets various HTTP headers for security
+ * Security middleware
  */
-app.use(helmet({
-  contentSecurityPolicy: false, // Allow inline scripts (needed for some tools)
-  crossOriginEmbedderPolicy: false
-}));
+app.use(helmet());
 
 /**
- * CORS Configuration
- * Allow requests from frontend domain
- * Only whitelisted origins can access API from browsers
+ * Response compression
+ * Reduces response size
+ */
+app.use(compression());
+
+/**
+ * JSON body parsing
+ */
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+/**
+ * Request logging
+ */
+app.use((req, res, next) => {
+  logger.info({
+    method: req.method,
+    path: req.originalUrl
+  });
+  next();
+});
+
+/**
+ * CORS
  */
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (server-to-server, curl during dev)
-    // Remove this if you want to block curl/Postman too
-    if (!origin) return callback(null, true);
-
-    if (config.cors.origin.includes(origin)) {
-      return callback(null, true);
-    }
-
-    callback(new Error(`CORS: origin ${origin} not allowed`));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
+  origin: config.cors.origin,
+  credentials: true
 }));
 
 /**
- * Rate Limiting
- * Apply to all /api/* routes
+ * Rate limiting
  */
-app.use('/api', apiLimiter);
+app.use("/api", apiLimiter);
 
 /**
- * API Key Authentication
- * Applies to ALL /api routes
+ * API key protection
  */
-app.use('/api', apiKeyAuth);
+app.use("/api", apiKeyAuth);
 
 /**
- * Body Parsing Middleware
- * Parse JSON and URL-encoded request bodies
+ * Root route
  */
-app.use(express.json({ limit: '10mb' })); // Allow up to 10MB JSON
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-/**
- * Request Logging (Development Only)
- * Log all incoming requests in development
- */
-if (config.isDevelopment()) {
-  app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path}`);
-    next();
-  });
-}
-
-/**
- * Root Route
- * GET /
- * Redirect to API documentation
- */
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: 'Welcome to Campus Connect API',
-    documentation: '/api',
-    health: '/api/health'
+    message: "Campus Connect API"
   });
 });
 
 /**
- * Mount API Routes
- * All routes are prefixed with /api
+ * API routes
  */
-app.use('/api', routes);
+app.use("/api", routes);
 
 /**
- * 404 Handler
- * Catch requests to non-existent routes
- * Must be placed AFTER all route definitions
+ * 404
  */
 app.use(notFoundHandler);
 
 /**
- * Error Handler
- * Catch and format all errors
- * Must have 4 parameters and be placed last
+ * Global error handler
  */
 app.use(errorHandler);
 
