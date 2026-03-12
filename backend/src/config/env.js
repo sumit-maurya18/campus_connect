@@ -6,6 +6,9 @@ const config = {
   port: process.env.PORT || 5000,
   nodeEnv: process.env.NODE_ENV || 'development',
   
+  // API Security
+  apiSecretKey: process.env.API_SECRET_KEY,
+  
   // Database Configuration
   database: {
     host: process.env.DB_HOST || 'localhost',
@@ -18,12 +21,14 @@ const config = {
   // CORS Configuration
   //'https://hoppscotch.io' for hopscotch API testing
   cors: {
-    origin: 
-    [
-    process.env.CORS_ORIGIN,
-    'http://localhost:3000',
-    'https://hoppscotch.io',
-  ]
+    origin: [
+      ...(process.env.ALLOWED_ORIGINS
+        ? process.env.ALLOWED_ORIGINS.split(',')
+        : []),
+      process.env.CORS_ORIGIN,
+      'http://localhost:3000',
+      'https://hoppscotch.io',
+    ].filter(Boolean),
   },
   
   // Rate Limiting
@@ -60,6 +65,5 @@ if (missingEnvVars.length > 0 && process.env.NODE_ENV !== 'development') {
 
 config.isDevelopment = () => config.nodeEnv === 'development';
 config.isProduction = () => config.nodeEnv === 'production';
-
 
 module.exports = config;

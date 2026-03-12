@@ -81,13 +81,13 @@ export default function CompetitionCard(props: CompetitionCardProps) {
       bg-white rounded-2xl border border-gray-300 overflow-hidden
       hover:shadow-xl ${accent.border}
       transition-all duration-200
-      flex flex-row min-h-[210px]
+      flex flex-row min-h-52.5
     `}>
 
       {/* ══ LEFT HALF — gradient banner (36% width) ══ */}
       <div className={`
-        w-[36%] flex-shrink-0
-        bg-gradient-to-br ${bannerGrad}
+        w-[36%] -shrink-0
+        bg-linear-to-br ${bannerGrad}
         relative overflow-hidden
         flex flex-col justify-between p-3
       `}>
@@ -107,7 +107,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
         <div className="z-10 space-y-1">
           {isHackathon && prize && (
             <div className="flex items-center gap-1">
-              <Trophy size={18} className="text-white/90 flex-shrink-0" />
+              <Trophy size={18} className="text-white/90 shrink-0" />
               <span className="text-white font-black text-[12px] leading-tight">{prize}</span>
             </div>
           )}

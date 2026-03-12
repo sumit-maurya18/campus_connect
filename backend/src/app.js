@@ -7,6 +7,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const config = require('./config/env');
 const routes = require('./routes');
+const apiKeyAuth = require('./middleware/apiKeyAuth');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { apiLimiter } = require('./middleware/rateLimiter');
 
@@ -25,19 +26,36 @@ app.use(helmet({
 /**
  * CORS Configuration
  * Allow requests from frontend domain
+ * Only whitelisted origins can access API from browsers
  */
 app.use(cors({
-  origin: config.cors.origin,
-  credentials: config.cors.credentials,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (server-to-server, curl during dev)
+    // Remove this if you want to block curl/Postman too
+    if (!origin) return callback(null, true);
+
+    if (config.cors.origin.includes(origin)) {
+      return callback(null, true);
+    }
+
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
 }));
 
 /**
  * Rate Limiting
  * Apply to all /api/* routes
  */
-app.use('/api/', apiLimiter);
+app.use('/api', apiLimiter);
+
+/**
+ * API Key Authentication
+ * Applies to ALL /api routes
+ */
+app.use('/api', apiKeyAuth);
 
 /**
  * Body Parsing Middleware
