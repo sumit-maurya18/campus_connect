@@ -61,7 +61,7 @@ export default function HackathonCollage() {
       {/* ── Header row ── */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-1 h-6 rounded-full bg-blue-500 flex-shrink-0" />
+          <div className="w-1 h-6 rounded-full bg-blue-500 shrink-0" />
           <h2 className="text-xl font-bold text-gray-900">Featured</h2>
         </div>
 
@@ -112,14 +112,14 @@ export default function HackathonCollage() {
             return (
               <div
                 key={i}
-                className="flex-shrink-0 cursor-pointer group"
+                className="shrink-0 cursor-pointer group"
                 style={{ width: `calc(${cardWidthPct}% - ${GAP_PX * (total - 1) / total}px)` }}
               >
                 {/* ── Tall banner ── */}
                 <div
                   className={`
-                    w-full h-[280px] rounded-2xl overflow-hidden
-                    bg-gradient-to-br ${banner.bg}
+                    w-full h-70 rounded-2xl overflow-hidden
+                    bg-linear-to-br ${banner.bg}
                     relative shadow-sm
                     group-hover:shadow-xl group-hover:-translate-y-1
                     transition-all duration-300
@@ -136,7 +136,7 @@ export default function HackathonCollage() {
                   </div>
 
                   {/* Bottom overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 px-3 py-3 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
+                  <div className="absolute bottom-0 left-0 right-0 px-3 py-3 bg-linear-to-t from-black/70 via-black/30 to-transparent">
                     <p className="text-white font-bold text-[13px] leading-snug">{banner.title}</p>
                     <p className="text-white/65 text-[11px] mt-0.5 truncate">{banner.org}</p>
                   </div>
@@ -160,7 +160,7 @@ export default function HackathonCollage() {
                         </span>
                       )}
                     </div>
-                    <button aria-label="Save" className="text-gray-300 hover:text-rose-400 transition-colors flex-shrink-0 ml-1">
+                    <button aria-label="Save" className="text-gray-300 hover:text-rose-400 transition-colors shrink-0 ml-1">
                       <Heart size={14} strokeWidth={1.8} />
                     </button>
                   </div>

@@ -62,7 +62,7 @@ export default function OpportunityCard(props: OpportunityCardProps) {
       {/* ── Row 1: Logo · Company · Verified · Platform ── */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className={`w-11 h-11 rounded-xl ${logoColor} flex items-center justify-center text-sm font-bold flex-shrink-0`}>
+          <div className={`w-11 h-11 rounded-xl ${logoColor} flex items-center justify-center text-sm font-bold shrink-0`}>
             {logo}
           </div>
           <div className="min-w-0">
@@ -70,12 +70,12 @@ export default function OpportunityCard(props: OpportunityCardProps) {
             <div className="flex items-center gap-1 mt-0.5">
               {verified ? (
                 <>
-                  <BadgeCheck size={11} className="text-emerald-500 flex-shrink-0" />
+                  <BadgeCheck size={11} className="text-emerald-500 shrink-0" />
                   <span className="text-[10px] text-emerald-600 font-semibold">Verified</span>
                 </>
               ) : (
                 <>
-                  <ShieldAlert size={11} className="text-amber-400 flex-shrink-0" />
+                  <ShieldAlert size={11} className="text-amber-400 shrink-0" />
                   <span className="text-[10px] text-amber-500 font-medium">Unverified</span>
                 </>
               )}
@@ -84,7 +84,7 @@ export default function OpportunityCard(props: OpportunityCardProps) {
         </div>
 
         {/* Platform pill with tooltip */}
-        <div className="relative group/platform flex-shrink-0">
+        <div className="relative group/platform shrink-0">
           <span className={`
             text-[10px] font-semibold px-2 py-0.5 rounded-full border cursor-default
             ${platform.cls}
@@ -114,7 +114,7 @@ export default function OpportunityCard(props: OpportunityCardProps) {
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
 
         <span className="flex items-center gap-1 text-[11px] text-gray-500">
-          <MapPin size={11} className="flex-shrink-0" />{location}
+          <MapPin size={11} className="shrink-0" />{location}
         </span>
 
         {isInternship && stipend && (

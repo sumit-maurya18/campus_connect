@@ -37,8 +37,8 @@ export default function OurTeamSection() {
             <div className="flex items-center gap-3">
               {/* Gradient avatar */}
               <div className={`
-                w-14 h-14 rounded-2xl bg-gradient-to-br ${color}
-                flex items-center justify-center flex-shrink-0
+                w-14 h-14 rounded-2xl bg-linear-to-br ${color}
+                flex items-center justify-center shrink-0
                 shadow-sm group-hover:shadow-md transition-shadow duration-200
               `}>
                 <span className="text-white font-black text-lg">{initials}</span>

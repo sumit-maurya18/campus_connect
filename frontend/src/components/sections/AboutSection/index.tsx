@@ -37,7 +37,7 @@ export default function AboutSection() {
         </div>
 
         {/* Vision */}
-        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 space-y-3 relative overflow-hidden">
+        <div className="bg-linear-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 space-y-3 relative overflow-hidden">
           {/* Decorative */}
           <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10 pointer-events-none" />
           <div className="absolute -bottom-6 -left-6 w-20 h-20 rounded-full bg-white/10 pointer-events-none" />

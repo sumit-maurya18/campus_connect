@@ -22,7 +22,7 @@ export default function Footer() {
     <footer className="bg-gray-950 text-gray-400 mt-20">
 
       {/* ── Main footer body ── */}
-      <div className="max-w-[1400px] mx-auto px-8 pt-14 pb-10">
+      <div className="max-w-350 mx-auto px-8 pt-14 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
 
           {/* ── Brand column (spans 2) ── */}
@@ -96,7 +96,7 @@ export default function Footer() {
 
       {/* ── Copyright bar ── */}
       <div className="border-t border-gray-800">
-        <div className="max-w-[1400px] mx-auto px-8 py-4 flex items-center justify-between flex-wrap gap-3">
+        <div className="max-w-350 mx-auto px-8 py-4 flex items-center justify-between flex-wrap gap-3">
           <p className="text-[12px] text-gray-600">{FOOTER.copyright}</p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="text-[12px] text-gray-600 hover:text-gray-400 transition-colors">

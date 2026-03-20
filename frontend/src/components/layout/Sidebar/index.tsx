@@ -39,7 +39,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <aside className="flex flex-col w-[240px] h-screen bg-white border-r border-gray-300 shadow-sm">
+    <aside className="flex flex-col w-60 h-screen bg-white border-r border-gray-300 shadow-sm">
 
       {/* User greeting */}
       <div className="flex items-center gap-3 px-5 pt-6 pb-5">

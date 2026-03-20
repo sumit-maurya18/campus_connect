@@ -67,7 +67,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
     : { border: "hover:border-emerald-200", btn: "bg-emerald-600 hover:bg-emerald-700" };
 
   return (
-    <div className={`bg-white rounded-2xl border border-gray-300 overflow-hidden hover:shadow-xl ${accent.border} transition-all duration-200 flex flex-row min-h-[210px]`}>
+    <div className={`bg-white rounded-2xl border border-gray-300 overflow-hidden hover:shadow-xl ${accent.border} transition-all duration-200 flex flex-row min-h-52.5`}>
 
       {/* LEFT BANNER */}
       <div className={`w-[36%] shrink-0 bg-linear-to-br ${bannerGrad} relative overflow-hidden flex flex-col justify-between p-3`}>

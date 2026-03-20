@@ -29,7 +29,7 @@ export default function AppShell({ children }: AppShellProps) {
       <aside
         className={`
           fixed md:sticky top-0 left-0 z-50 h-screen
-          w-[240px]
+          w-60
           transition-transform duration-200 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
