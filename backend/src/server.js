@@ -1,13 +1,3 @@
-/**
- * Entry point for the backend server.
- *
- * Responsibilities:
- * 1. Load environment variables
- * 2. Initialize database pool
- * 3. Start HTTP server
- * 4. Handle graceful shutdown
- */
-
 require("dotenv").config();
 
 const app = require("./app");
@@ -19,35 +9,28 @@ const {
 
 const logger = require("./utils/logger");
 
-const PORT = config.port;
+const PORT = process.env.PORT || config.port || 5000;
 
 let shuttingDown = false;
 
 const startServer = async () => {
   try {
-    // ----------------------------------
-    // Initialize database pool
-    // ----------------------------------
+    // Initialize database
     await initDatabase();
 
-    // ----------------------------------
     // Start HTTP server
-    // ----------------------------------
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, "0.0.0.0", () => {
       logger.info(`
 🚀 Campus Connect Backend Server
 -----------------------------------------
 📡 Port:        ${PORT}
 🌍 Environment: ${config.nodeEnv}
-📍 URL:         http://localhost:${PORT}
-🏥 Health:      http://localhost:${PORT}/api/health
+🏥 Health:      /api/health
 -----------------------------------------
       `);
     });
 
-    // ----------------------------------
     // Graceful shutdown
-    // ----------------------------------
     const gracefulShutdown = async (signal) => {
       if (shuttingDown) return;
       shuttingDown = true;
@@ -76,9 +59,6 @@ const startServer = async () => {
     process.on("SIGINT", gracefulShutdown);
     process.on("SIGTERM", gracefulShutdown);
 
-    // ----------------------------------
-    // Global error handlers
-    // ----------------------------------
     process.on("uncaughtException", (err) => {
       logger.error("Uncaught Exception", err);
       process.exit(1);
