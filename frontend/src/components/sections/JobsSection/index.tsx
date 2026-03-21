@@ -29,7 +29,7 @@ function logoColor(i: number) {
 
 export default function JobsSection({ data }: Props) {
 
-  const jobs = data;
+  const jobs = data ?? [];
 
   return (
     <section id="jobs">

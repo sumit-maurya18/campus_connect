@@ -37,16 +37,16 @@ export const ABOUT = {
 // ── Team ─────────────────────────────────────────────────
 export const TEAM = [
   {
-    name:     "Aarav Mehta",
+    name:     "Sumit Maurya",
     role:     "Co-founder & CEO",
-    bio:      "Former SDE at Google. Passionate about democratising access to career opportunities.",
-    initials: "AM",
+    bio:      "Undergrad student.",
+    initials: "SM",
     color:    "from-blue-500 to-indigo-600",
     linkedin: "https://linkedin.com",
     twitter:  "https://twitter.com",
   },
   {
-    name:     "Priya Sharma",
+    name:     "Sumit Avasthi",
     role:     "Co-founder & CPO",
     bio:      "Ex-product lead at Razorpay. Obsessed with building products students actually love.",
     initials: "PS",

@@ -30,7 +30,7 @@ function logoColor(i: number) {
 
 export default function InternshipsSection({ data }: Props) {
 
-  const internships = data;
+  const internships = data ?? [];
 
   return (
     <section id="internships">

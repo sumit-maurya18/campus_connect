@@ -1,13 +1,17 @@
-function getEnv(name: string): string {
+function getEnv(name: string, fallback?: string): string {
   const value = process.env[name];
+
   if (!value) {
-    throw new Error(`${name} environment variable is missing`);
+    if (fallback !== undefined) return fallback;
+    console.error(`${name} environment variable is missing`);
+    return "";
   }
+
   return value;
 }
 
 const BASE_URL = getEnv("NEXT_PUBLIC_API_URL");
-const API_KEY  = getEnv("API_SECRET_KEY");
+const API_KEY = getEnv("API_SECRET_KEY");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -35,57 +39,141 @@ type FetchOptions = RequestInit & {
   next?: { revalidate?: number };
 };
 
+function fallbackResponse<T>(message: string): ApiResponse<T> {
+  return {
+    success: false,
+    data: null as T,
+    message,
+    error: message,
+  };
+}
+
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit,
+  timeout = 5000
+) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const res = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    return res;
+  } finally {
+    clearTimeout(id);
+  }
+}
+
+async function retryFetch<T>(
+  fn: () => Promise<ApiResponse<T>>,
+  retries = 2
+): Promise<ApiResponse<T>> {
+  for (let i = 0; i <= retries; i++) {
+    const res = await fn();
+    if (res.success) return res;
+  }
+  return fallbackResponse<T>("Failed after retries");
+}
+
 export async function apiFetch<T>(
   path: string,
   options: FetchOptions = {}
 ): Promise<ApiResponse<T>> {
-
   const { headers, ...rest } = options;
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    headers: {
-      ...getHeaders(),
-      ...(headers ?? {}),
-    },
-
-    ...(isDev
-      ? { cache: "no-store" as RequestCache }
-      : { next: { revalidate: 60 } }),
-
-    ...rest,
-  });
-
-  if (!res.ok) {
-
-    let message = `API error ${res.status}`;
-
+  const execute = async (): Promise<ApiResponse<T>> => {
     try {
-      const err = await res.json();
-      message = err.message || err.error || message;
-    } catch {}
+      const res = await fetchWithTimeout(`${BASE_URL}${path}`, {
+        headers: {
+          ...getHeaders(),
+          ...(headers ?? {}),
+        },
+        ...(isDev
+          ? { cache: "no-store" as RequestCache }
+          : { next: { revalidate: 60 } }),
+        ...rest,
+      });
 
-    throw new Error(message);
-  }
+      if (!res.ok) {
+        let message = `API error ${res.status}`;
+        try {
+          const err = await res.json();
+          message = err.message || err.error || message;
+        } catch {}
+        return fallbackResponse<T>(message);
+      }
 
-  const json: ApiResponse<T> = await res.json();
+      let json: ApiResponse<T>;
+      try {
+        json = await res.json();
+      } catch {
+        return fallbackResponse<T>("Invalid JSON response");
+      }
 
-  if (!json.success) {
-    throw new Error(
-      json.message ||
-      json.error ||
-      "API returned success:false"
-    );
-  }
+      if (!json.success) {
+        return fallbackResponse<T>(
+          json.message || json.error || "API returned success:false"
+        );
+      }
 
-  return json;
+      return json;
+    } catch (err: any) {
+      return fallbackResponse<T>(
+        err.name === "AbortError" ? "Request timeout" : "Network error"
+      );
+    }
+  };
+
+  return retryFetch(execute, 2);
 }
 
 export async function apiGet<T>(
   path: string,
   options: FetchOptions = {}
-): Promise<T> {
-
+): Promise<T | null> {
   const response = await apiFetch<T>(path, options);
+  return response.success ? response.data : null;
+}
 
-  return response.data;
+export async function apiPost<T>(
+  path: string,
+  body: any,
+  options: FetchOptions = {}
+): Promise<T | null> {
+  const response = await apiFetch<T>(path, {
+    method: "POST",
+    body: JSON.stringify(body),
+    ...options,
+  });
+
+  return response.success ? response.data : null;
+}
+
+export async function apiPut<T>(
+  path: string,
+  body: any,
+  options: FetchOptions = {}
+): Promise<T | null> {
+  const response = await apiFetch<T>(path, {
+    method: "PUT",
+    body: JSON.stringify(body),
+    ...options,
+  });
+
+  return response.success ? response.data : null;
+}
+
+export async function apiDelete<T>(
+  path: string,
+  options: FetchOptions = {}
+): Promise<T | null> {
+  const response = await apiFetch<T>(path, {
+    method: "DELETE",
+    ...options,
+  });
+
+  return response.success ? response.data : null;
 }

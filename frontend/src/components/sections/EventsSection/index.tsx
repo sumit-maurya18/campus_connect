@@ -52,7 +52,7 @@ function locationLabel(item: EventOpportunity) {
 
 export default function EventsSection({ data }: Props) {
 
-  const events = data;
+  const events = data ?? [];
 
   return (
     <section id="events">

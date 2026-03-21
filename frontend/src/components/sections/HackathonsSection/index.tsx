@@ -40,7 +40,7 @@ function formatDeadline(deadline?: string | null) {
 
 export default function HackathonsSection({ data }: Props) {
 
-  const hackathons = data;
+  const hackathons = data ?? [];
 
   return (
     <section id="hackathons">
