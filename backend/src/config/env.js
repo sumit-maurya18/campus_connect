@@ -45,13 +45,20 @@ const config = {
   }
 };
 
+// --------------------------------------------
+// Required variables check
+// Modified to support Neon DATABASE_URL
+// --------------------------------------------
 const required = ["DB_HOST", "DB_NAME", "DB_USER", "DB_PASSWORD"];
 
-const missing = required.filter(v => !process.env[v]);
+// If DATABASE_URL exists → using Neon → skip local DB checks
+if (!process.env.DATABASE_URL) {
+  const missing = required.filter(v => !process.env[v]);
 
-if (missing.length > 0 && config.nodeEnv !== "development") {
-  logger.error("Missing environment variables:", missing);
-  process.exit(1);
+  if (missing.length > 0 && config.nodeEnv !== "development") {
+    logger.error("Missing environment variables:", missing);
+    process.exit(1);
+  }
 }
 
 config.isDevelopment = () => config.nodeEnv === "development";
