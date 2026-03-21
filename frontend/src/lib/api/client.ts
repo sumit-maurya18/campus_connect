@@ -39,6 +39,10 @@ type FetchOptions = RequestInit & {
   next?: { revalidate?: number };
 };
 
+/**
+ * Fallback response when API fails
+ * Ensures frontend never crashes
+ */
 function fallbackResponse<T>(message: string): ApiResponse<T> {
   return {
     success: false,
@@ -48,6 +52,9 @@ function fallbackResponse<T>(message: string): ApiResponse<T> {
   };
 }
 
+/**
+ * Fetch with timeout support
+ */
 async function fetchWithTimeout(
   url: string,
   options: RequestInit,
@@ -67,6 +74,9 @@ async function fetchWithTimeout(
   }
 }
 
+/**
+ * Retry failed API calls
+ */
 async function retryFetch<T>(
   fn: () => Promise<ApiResponse<T>>,
   retries = 2
@@ -78,6 +88,9 @@ async function retryFetch<T>(
   return fallbackResponse<T>("Failed after retries");
 }
 
+/**
+ * Core API fetch function
+ */
 export async function apiFetch<T>(
   path: string,
   options: FetchOptions = {}
@@ -130,50 +143,63 @@ export async function apiFetch<T>(
   return retryFetch(execute, 2);
 }
 
+/**
+ * GET request
+ * Always returns data (never null)
+ */
 export async function apiGet<T>(
   path: string,
   options: FetchOptions = {}
-): Promise<T | null> {
+): Promise<T> {
   const response = await apiFetch<T>(path, options);
-  return response.success ? response.data : null;
+  return response.success && response.data ? response.data : ([] as unknown as T);
 }
 
+/**
+ * POST request
+ */
 export async function apiPost<T>(
   path: string,
   body: any,
   options: FetchOptions = {}
-): Promise<T | null> {
+): Promise<T> {
   const response = await apiFetch<T>(path, {
     method: "POST",
     body: JSON.stringify(body),
     ...options,
   });
 
-  return response.success ? response.data : null;
+  return response.success && response.data ? response.data : ({} as T);
 }
 
+/**
+ * PUT request
+ */
 export async function apiPut<T>(
   path: string,
   body: any,
   options: FetchOptions = {}
-): Promise<T | null> {
+): Promise<T> {
   const response = await apiFetch<T>(path, {
     method: "PUT",
     body: JSON.stringify(body),
     ...options,
   });
 
-  return response.success ? response.data : null;
+  return response.success && response.data ? response.data : ({} as T);
 }
 
+/**
+ * DELETE request
+ */
 export async function apiDelete<T>(
   path: string,
   options: FetchOptions = {}
-): Promise<T | null> {
+): Promise<T> {
   const response = await apiFetch<T>(path, {
     method: "DELETE",
     ...options,
   });
 
-  return response.success ? response.data : null;
+  return response.success && response.data ? response.data : ({} as T);
 }
