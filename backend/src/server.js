@@ -15,10 +15,7 @@ let shuttingDown = false;
 
 const startServer = async () => {
   try {
-    // Initialize database
-    await initDatabase();
-
-    // Start HTTP server
+    // Start server FIRST (important for Render)
     const server = app.listen(PORT, "0.0.0.0", () => {
       logger.info(`
 🚀 Campus Connect Backend Server
@@ -29,6 +26,11 @@ const startServer = async () => {
 -----------------------------------------
       `);
     });
+
+    // Connect database AFTER server starts
+    initDatabase()
+      .then(() => logger.info("Database connected"))
+      .catch(err => logger.error("Database connection failed", err));
 
     // Graceful shutdown
     const gracefulShutdown = async (signal) => {
@@ -48,12 +50,6 @@ const startServer = async () => {
           process.exit(1);
         }
       });
-
-      setTimeout(async () => {
-        logger.error("Forced shutdown after timeout");
-        await closeConnection();
-        process.exit(1);
-      }, 10000);
     };
 
     process.on("SIGINT", gracefulShutdown);
