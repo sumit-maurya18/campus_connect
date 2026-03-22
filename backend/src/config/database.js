@@ -2,10 +2,11 @@ const { Pool } = require("pg");
 const config = require("./env");
 const logger = require("../utils/logger");
 
-const pool = process.env.DATABASE_URL
+// Use DATABASE_URL (Neon) if available, otherwise local DB
+const pool = config.database.connectionString
   ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      connectionString: config.database.connectionString,
+      ssl: config.database.ssl,
       max: 20,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 2000
@@ -30,6 +31,7 @@ async function initDatabase() {
   try {
     await pool.query("SELECT 1");
     logger.info("Database pool initialized");
+    logger.info("Database connected");
   } catch (err) {
     logger.error("Database initialization failed", err);
     process.exit(1);
@@ -41,7 +43,6 @@ const query = async (text, params) => {
 
   try {
     const result = await pool.query(text, params);
-
     const duration = Date.now() - start;
 
     if (duration > 300) {
