@@ -9,7 +9,7 @@ const pool = config.database.connectionString
       ssl: config.database.ssl,
       max: 20,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000
+      connectionTimeoutMillis: 10000
     })
   : new Pool({
       host: config.database.host,
